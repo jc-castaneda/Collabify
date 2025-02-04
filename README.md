@@ -1,4 +1,4 @@
-# Collabofy
+# Collabify
 
 The Music Collaboration App (Collabify) is a web-based platform designed to help musicians, producers, and audio engineers collaborate remotely. Unlike existing platforms like SoundCloud, which focus on sharing finished music, our solution enables real-time collaboration during the creative process.
 
