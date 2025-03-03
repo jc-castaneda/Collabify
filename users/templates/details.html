@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<!--Modified from https://www.w3schools.com/django-->
+
+<h1>{{ myuser.username }}</h1>
+  
+<p><b>Email:</b> {{ myuser.email }}</p>
+<p><b>Bio:</b> {{ myuser.bio }}</p>
+<p><b>Interests:</b> {{ myuser.interests|join:", " }}</p>
+<p><b>Skills:</b> {{ myuser.skills|join:", " }}</p>
+<p><b>Type:</b> {{ myuser.user_type }}</p>
+
+<p>Back to <a href="/users">Users</a></p>
+
+</body>
+</html>

@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<!--Modified from https://www.w3schools.com/django-->
+
+<h1>Members</h1>
+  
+<ul>
+  {% for x in myusers %}
+    <li><a href="details/{{ x.id }}">{{ x.username }}</a></li>
+  {% endfor %}
+</ul>
+
+</body>
+</html>
