@@ -3,6 +3,9 @@ from django.http import HttpResponse
 from .models import User
 
 # Modified from https://www.w3schools.com/django
+def testpage(request):
+	template = loader.get_template('test_page.html')
+	return HttpResponse(template.render({}, request))
 
 def users(request):
 	myusers = User.objects.all().values()
