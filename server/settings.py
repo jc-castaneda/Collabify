@@ -10,6 +10,13 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
+import os
+
+def get_secret(secret_id, backup=None):
+    return os.getenv(secret_id, backup)
+
+is_local = get_secret('PIPELINE') != 'production'
+
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -20,11 +27,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-from server.settings import get_secret
-SECRET_KEY = get_secret('SECRET_KEY')
+if (is_local):
+    SECRET_KEY = 'django-insecure-@kl=l07d-1il0m+163l)ln_ia9r04ovds@5c%q0e(2s$1tjd4h'
+else:
+    SECRET_KEY = get_secret('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = is_local
 
 ALLOWED_HOSTS = ['*']
 
@@ -75,21 +84,29 @@ WSGI_APPLICATION = 'server.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-DB_NAME = get_secret("DB_NAME")
-DB_USER_NM = get_secret("DB_USER_NM")
-DB_USER_PW = get_secret("DB_USER_PW")
-DB_IP = get_secret("DB_IP")
-DB_PORT = get_secret("DB_PORT")
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': DB_NAME,
-        'USER': DB_USER_NM,
-        "PASSWORD": DB_USER_PW,
-        "HOST": DB_IP,
-        "PORT": DB_PORT,
+if (is_local):
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
     }
-}
+else:
+    DB_NAME = get_secret("DB_NAME")
+    DB_USER_NM = get_secret("DB_USER_NM")
+    DB_USER_PW = get_secret("DB_USER_PW")
+    DB_IP = get_secret("DB_IP")
+    DB_PORT = get_secret("DB_PORT")
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': DB_NAME,
+            'USER': DB_USER_NM,
+            "PASSWORD": DB_USER_PW,
+            "HOST": DB_IP,
+            "PORT": DB_PORT,
+        }
+    }
 
 
 # Password validation
