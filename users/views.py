@@ -1,6 +1,7 @@
 from django.template import loader
 from django.http import HttpResponse
 from .models import User
+from django.http import JsonResponse
 
 # Modified from https://www.w3schools.com/django
 def testpage(request):
@@ -22,3 +23,15 @@ def details(request, id):
 		'myuser': myuser,
 	}
 	return HttpResponse(template.render(context, request))
+
+def users(request):
+    myusers = list(User.objects.values())  # Convert QuerySet to list
+    return JsonResponse({"users": myusers})
+
+
+def details(request, id):
+    try:
+        myuser = User.objects.values("id", "username", "email", "bio", "interests", "skills", "user_type").get(id=id)
+        return JsonResponse({"user": myuser})
+    except User.DoesNotExist:
+        return JsonResponse({"error": "User not found"}, status=404)
