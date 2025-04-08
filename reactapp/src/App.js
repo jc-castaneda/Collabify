@@ -1,21 +1,26 @@
 import './App.css';
-import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import HomePage from "./components/HomePage";
-import UsersPage from "./components/UsersPage";
-import UserDetails from "./components/UserDetails";
+import React from 'react';
+import Navbar from './components/Navbar';
+import Login from './pages/Login';
+import Signup from './pages/Signup';
+import Home from './pages/Home';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
+import { AuthContextProvider } from './context/AuthContext'  
 
-
-function App() {
+const App = () => {
   return (
+    <AuthContextProvider>
       <Router>
-          <Routes>
-              <Route path="/" element={<HomePage />} />
-              <Route path="/users" element={<UsersPage />} />
-              <Route path="/users/details/:id" element={<UserDetails />} />
-          </Routes>
+        <Navbar />
+        <Routes>
+            <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          {/* Add other routes here */}
+        </Routes>
       </Router>
-  );
+    </AuthContextProvider>
+  )
 }
 
-export default App;
+export default App

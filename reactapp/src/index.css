@@ -1,13 +1,249 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+/* Google Font */
+@import url('https://fonts.googleapis.com/css2?family=Kanit&display=swap');
+
+/* Layout Variables */
+:root {
+  --primary: #ff0000;
+  --error: hsl(341, 81%, 50%);
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+/* Body & General Layout */
+body {
+  background: #f1f1f1;
+  margin: 0;
+  font-family: 'Kanit', sans-serif;
+}
+
+header {
+  background: linear-gradient(90deg, #800080, #ff4500); /* Purple to Orange-Red gradient */
+}
+
+header .container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+header a {
+  color: rgb(255, 255, 255);
+  text-decoration: none;
+}
+
+.pages {
+  max-width: 1400px;
+  padding: 20px;
+  margin: 0 auto;
+}
+
+/* Form & Button Styles */
+input, textarea, select {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  font-size: 1em;
+}
+
+button {
+  width: 100%;
+  padding: 10px;
+  background-color: #da2d2d;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 1em;
+  cursor: pointer;
+  margin-top: 10px; /* Ensure some space between input fields and button */
+}
+
+button:hover {
+  background-color: black;
+  color: #ddd;
+}
+
+/* Error & Validation Styles */
+div.error {
+  padding: 10px;
+  background: #ffefef;
+  border: 1px solid var(--error);
+  color: var(--error);
+  border-radius: 4px;
+  margin: 20px 0;
+}
+
+input.error {
+  border: 1px solid var(--error);
+}
+
+/* Header & Navigation Styles */
+nav {
+  display: flex;
+  align-items: center;
+}
+
+nav a {
+  margin-left: 10px;
+}
+
+nav a:hover {
+  text-decoration: underline;
+}
+
+nav button {
+  background: #fff;
+  color: #da2d2d;
+  border: 2px solid #da2d2d;
+  padding: 6px 10px;
+  border-radius: 4px;
+  font-family: 'Kanit', sans-serif;
+  cursor: pointer;
+  font-size: 1em;
+  margin-left: 8px;
+}
+
+nav button:hover {
+  background-color: black;
+  color: white;
+}
+
+/* Form Container Styles */
+.form-container {
+  max-width: 400px;
+  margin: 40px auto;
+  padding: 30px;
+  background-color: #fff;
+  border-radius: 4px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+h3 {
+  text-decoration: underline;
+}
+
+/* Login & Sign Up Forms */
+form.signup, form.login {
+  max-width: 400px;
+  margin: 40px auto;
+  padding: 20px;
+  background: #fff;
+  background-position: center;
+  border-radius: 4px;
+}
+
+form.signup button {
+  background-color: #ab2385; /* Green */
+}
+
+form.login button {
+  background-color: #da2d2d; /* Red */
+}
+
+form input, form select, form textarea {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  font-size: 1em;
+}
+
+/* Buttons: Login & Sign Up */
+.login-button {
+  background-color: #ff5555;
+}
+
+.signup-button {
+  background-color: #d11a91;
+}
+
+.login-button:hover {
+  background-color: #ff4444;
+}
+
+.signup-button:hover {
+  background-color: #a21264;
+}
+
+/* Form Group & Spacing */
+.form-group {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+}
+
+button {
+  width: 100%; /* Ensures button takes full width */
+}
+
+span {
+  background: white;
+  padding: 10px;
+}
+
+/* Shared Form Styles */
+label, input {
+  display: block;
+  color: rgb(0, 0, 0);
+}
+
+label.color {
+  color: white;
+}
+
+.workout-details, .food-details {
+  background: #fff;
+  border-radius: 4px;
+  margin: 20px auto;
+  padding: 20px;
+  position: relative;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.workout-details h4, .food-details h4 {
+  margin: 0 0 10px 0;
+  font-size: 1.2em;
+  color: var(--primary);
+}
+
+.workout-details p, .food-details p {
+  margin: 0;
+  font-size: 0.9em;
+  color: #555;
+}
+
+.workout-details span, .food-details span {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  cursor: pointer;
+  background: #f1f1f1;
+  padding: 6px;
+  border-radius: 50%;
+  color: #333;
+}
+
+/* Page Layout */
+.home {
+
+}
+
+h1, h2, p { 
+  margin: 0;
+  text-align: center
+}
+
+img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
+}
+
+label.color {
+  color: white;
 }
