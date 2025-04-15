@@ -7,7 +7,6 @@ from django.contrib.auth.models import AbstractUser
 
 class CustomUser(AbstractUser):
 
-
     # Expanding on the built-in model
     class UserType(models.TextChoices):
         PRODUCER = "1", "Producer"

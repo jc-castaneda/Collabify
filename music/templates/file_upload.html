@@ -1,0 +1,35 @@
+<form id = 'uploadForm'>
+	<input type="file" id="fileInput" name="file">
+	<input type="submit">
+</form>
+
+<script>
+const form = document.getElementById('uploadForm');
+const fileInput = document.getElementById('fileInput');
+var lastRequest;
+
+// From Google AI & https://stackoverflow.com/questions/36067767/how-do-i-upload-a-file-with-the-js-fetch-api
+form.addEventListener('submit', async (event) => {
+	event.preventDefault();
+
+	var data = new FormData();
+	data.append('user', 1);
+	data.append('date', '4/15/2025 01:23:45');
+	data.append('file', fileInput.files[0]);
+
+	try {
+		lastRequest = await fetch('/api/post_song/', {
+			method: 'POST',
+			body: data
+		});
+
+		if (lastRequest.ok) {
+			console.log('File uploaded successfully');
+		} else {
+			console.error('File upload failed');
+		}
+	} catch (error) {
+		console.error('Error during file upload:', error);
+	}
+});
+</script>

@@ -47,3 +47,6 @@ ENV/
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+# Collabify
+song_uploads/

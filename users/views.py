@@ -5,8 +5,6 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from django.views.decorators.csrf import csrf_exempt
-# Import your CustomUser model instead of the default User
-import users.models
 from users.models import *
 from django.contrib.auth import authenticate
 from rest_framework import status
@@ -85,7 +83,7 @@ def get_user_info(request, user_id):
             'skills': user.skills,
             'user_type': str(user.user_type)
         })
-    except (ValueError, users.models.CustomUser.DoesNotExist):
+    except (ValueError, CustomUser.DoesNotExist):
         return Response({'error': "Invalid user ID"}, status=status.HTTP_400_BAD_REQUEST)
 
 # Send a friend request from user A to user B
@@ -126,7 +124,7 @@ def send_friend_request(from_user, to_user, user_a, user_b):
 
     # This friend request should not already be in the DB
     # By extension, this also makes sure the users aren't already friends
-    if (FriendStatus.objects.filter(user_a=user_a, user_b=user_b).exists()):
+    elif (FriendStatus.objects.filter(user_a=user_a, user_b=user_b).exists()):
         return Response({'error': "Duplicate request"}, status=status.HTTP_400_BAD_REQUEST)
 
     # Insert friend request into DB
