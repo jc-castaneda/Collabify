@@ -1,0 +1,248 @@
+:root {
+    --collabify-gradient-start: #5a31e6;
+    --collabify-gradient-end: #f56040;
+    --collabify-accent: #ff7c40;
+    --collabify-light: #f5f5f7;
+    --collabify-dark: #1d1d1f;
+    --collabify-gray: #86868b;
+  }
+  
+  .friend-requests-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    color: var(--collabify-dark);
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  }
+  
+  .tabs {
+    display: flex;
+    margin-bottom: 25px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  }
+  
+  .tab {
+    padding: 12px 24px;
+    font-size: 16px;
+    font-weight: 500;
+    background: none;
+    border: none;
+    cursor: pointer;
+    position: relative;
+    color: var(--collabify-gray);
+    transition: all 0.2s ease;
+  }
+  
+  .tab:hover {
+    color: var(--collabify-dark);
+  }
+  
+  .tab.active {
+    color: var(--collabify-dark);
+    font-weight: 600;
+  }
+  
+  .tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(
+      to right,
+      var(--collabify-gradient-start),
+      var(--collabify-gradient-end)
+    );
+    border-radius: 3px 3px 0 0;
+  }
+  
+  .badge {
+    background: linear-gradient(
+      to right,
+      var(--collabify-gradient-start),
+      var(--collabify-gradient-end)
+    );
+    color: white;
+    border-radius: 12px;
+    padding: 2px 8px;
+    font-size: 12px;
+    font-weight: 500;
+    margin-left: 8px;
+  }
+  
+  .request-card, .friend-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    margin-bottom: 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    background-color: white;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  
+  .request-card:hover, .friend-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+  }
+  
+  .user-info {
+    flex: 1;
+  }
+  
+  .user-info h3 {
+    margin: 0 0 8px 0;
+    font-size: 18px;
+    font-weight: 600;
+  }
+  
+  .user-type-tag {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    margin-bottom: 10px;
+    color: white;
+  }
+  
+  .user-type-tag.producer {
+    background: linear-gradient(135deg, #5a31e6, #8254e5);
+  }
+  
+  .user-type-tag.musician {
+    background: linear-gradient(135deg, #784be8, #b344db);
+  }
+  
+  .user-type-tag.singer {
+    background: linear-gradient(135deg, #c837db, #f56040);
+  }
+  
+  .bio {
+    font-size: 14px;
+    color: var(--collabify-gray);
+    margin: 8px 0;
+    line-height: 1.4;
+  }
+  
+  .request-actions, .friend-actions {
+    display: flex;
+    gap: 12px;
+  }
+  
+  button {
+    padding: 10px 18px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
+    transition: all 0.2s;
+  }
+  
+  .accept-button {
+    background: linear-gradient(
+      to right,
+      var(--collabify-gradient-start),
+      var(--collabify-gradient-end)
+    );
+    color: white;
+  }
+  
+  .accept-button:hover {
+    box-shadow: 0 4px 12px rgba(90, 49, 230, 0.3);
+    transform: translateY(-2px);
+  }
+  
+  .reject-button {
+    background-color: transparent;
+    color: var(--collabify-gray);
+    border: 1px solid var(--collabify-gray);
+  }
+  
+  .reject-button:hover {
+    color: var(--collabify-dark);
+    border-color: var(--collabify-dark);
+  }
+  
+  .message-button {
+    background: linear-gradient(
+      to right,
+      var(--collabify-gradient-start),
+      var(--collabify-gradient-end)
+    );
+    color: white;
+  }
+  
+  .message-button:hover {
+    box-shadow: 0 4px 12px rgba(90, 49, 230, 0.3);
+    transform: translateY(-2px);
+  }
+  
+  .view-profile-button {
+    background-color: var(--collabify-light);
+    color: var(--collabify-dark);
+  }
+  
+  .view-profile-button:hover {
+    background-color: #eaeaea;
+  }
+  
+  .notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 12px 20px;
+    border-radius: 8px;
+    color: white;
+    font-weight: 500;
+    z-index: 1000;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    animation: slideIn 0.3s, fadeOut 0.3s 2.7s;
+  }
+  
+  .notification.success {
+    background: linear-gradient(
+      to right,
+      var(--collabify-gradient-start),
+      var(--collabify-gradient-end)
+    );
+  }
+  
+  .notification.error {
+    background: linear-gradient(to right, #e74c3c, #c0392b);
+  }
+  
+  .no-requests, .no-friends {
+    text-align: center;
+    color: var(--collabify-gray);
+    font-style: italic;
+    padding: 40px 20px;
+  }
+  
+  .friend-requests-loading {
+    text-align: center;
+    padding: 60px;
+    color: var(--collabify-dark);
+  }
+  
+  @keyframes slideIn {
+    from { 
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    to { 
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  @keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+  }
