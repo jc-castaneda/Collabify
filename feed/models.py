@@ -10,6 +10,8 @@ class Post(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     likes = models.ManyToManyField(CustomUser, related_name='liked_posts', blank=True)
+    image = models.FileField(upload_to='image_uploads/', null=True)
+    song = models.FileField(upload_to='song_uploads/', null=True)
 
     # Defines Post's status
     status = models.CharField(max_length=20, choices=[

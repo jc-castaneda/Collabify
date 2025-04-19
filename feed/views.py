@@ -1,5 +1,8 @@
 # I M P O R T S   &   D E P E N D E N C I E S-----------------------
 from django.shortcuts import render
+from django.template import loader
+from django.http import HttpResponse
+from django.http import FileResponse
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -134,3 +137,41 @@ def like_post(request, pk):
     else:
         post.likes.add(user)
         return Response({"liked": True, "count": post.likes.count()})
+
+
+# FILE HANDLING
+
+
+@csrf_exempt
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_image(request, pk):
+
+    try:
+        post = Post.objects.get(pk=pk)
+    except Post.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    return FileResponse(open(post.image.path, 'rb'))
+
+
+@csrf_exempt
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_song(request, pk):
+
+    try:
+        post = Post.objects.get(pk=pk)
+    except Post.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    return FileResponse(open(post.song.path, 'rb'))
+
+
+
+# TEMPORARY DOCUMENT FOR MUSIC/IMAGE UPLOADS
+
+def upload_test(request):
+
+    template = loader.get_template('file_upload.html');
+    return HttpResponse(template.render());
