@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { registerUser, loginUser } from '../api';
 import '../styles/Auth.css';
 
-const Register = () => {
+function Register() {
   const [formData, setFormData] = useState({
     username: '',
     email: '',
@@ -79,7 +79,7 @@ const Register = () => {
       });
       
       setLoading(false);
-      navigate('/profiles'); // Redirect to profiles page after registration
+      navigate('/users'); // Redirect to profiles page after registration
     } catch (error) {
       setLoading(false);
       setError(error.message || 'Registration failed. Please try again.');
@@ -214,6 +214,6 @@ const Register = () => {
       </div>
     </div>
   );
-};
+}
 
 export default Register;

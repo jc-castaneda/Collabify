@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { loginUser } from '../api';
 import '../styles/Auth.css';
 
-const Login = () => {
+function Login() {
   const [credentials, setCredentials] = useState({
     username: '',
     password: ''
@@ -28,7 +28,7 @@ const Login = () => {
     try {
       await loginUser(credentials);
       setLoading(false);
-      navigate('/profiles'); // Redirect to profiles page after successful login
+      navigate('/users'); // Redirect to profiles page after successful login
     } catch (error) {
       setLoading(false);
       setError(error.message || 'Login failed. Please check your credentials.');
@@ -82,6 +82,6 @@ const Login = () => {
       </div>
     </div>
   );
-};
+}
 
 export default Login;
