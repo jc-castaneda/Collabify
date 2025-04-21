@@ -30,4 +30,6 @@ urlpatterns = [
     path('api/posts/<int:post_id>/comments/', feed.views.post_comments, name='post-comments'),
     path('api/posts/<int:pk>/image/', feed.views.get_image, name='post-get-image'),
     path('api/posts/<int:pk>/song/', feed.views.get_song, name='post-get-song'),
+    path('api/friend-requests/', users.views.get_friend_requests, name='friend-requests'),
+    path('api/friends/', users.views.get_friends, name='friends'),
 ]

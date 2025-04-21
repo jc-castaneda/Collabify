@@ -5,6 +5,11 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from django.views.decorators.csrf import csrf_exempt
+from django.db.models import Q
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from users.models import CustomUser, FriendStatus
 # Import your CustomUser model instead of the default User
 import users.models
 from users.models import *
@@ -91,33 +96,49 @@ def get_user_info(request, user_id):
 # Send a friend request from user A to user B
 @api_view(['POST'])
 def update_friend(request):
-
-    # Request should contain 'action', 'from', and 'to' fields
+    """Update friendship status between users"""
     try:
-        from_user = request.data['from']
-        to_user = request.data['to']
-        action = request.data['action']
+        # Extract required fields
+        from_user = request.data.get('from')
+        to_user = request.data.get('to')
+        action = request.data.get('action')
+        
+        # Validate required fields
+        if any(x is None for x in [from_user, to_user, action]):
+            return Response({'error': "Missing field"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Convert to integers if needed
+        try:
+            from_user = int(from_user)
+            to_user = int(to_user)
+        except (ValueError, TypeError):
+            return Response({'error': "Invalid user IDs"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Determine user_a and user_b for consistent storage
         user_a = min(from_user, to_user)
         user_b = max(from_user, to_user)
-    except KeyError:
-        return Response({'error': "Missing field"}, status=status.HTTP_400_BAD_REQUEST)
-
-    # The targeted users must exist
-    if not (CustomUser.objects.filter(id=user_a).exists()):
-        return Response({'error': f"Nonexistent user #{user_a}"}, status=status.HTTP_400_BAD_REQUEST)
-    elif not (CustomUser.objects.filter(id=user_b).exists()):
-        return Response({'error': f"Nonexistent user #{user_b}"}, status=status.HTTP_400_BAD_REQUEST)
-
-    # Branch off to different functions depending on action
-    # 'reject' and 'remove' share a function due to their code overlapping
-    if (action == 'send'):
-        return send_friend_request(from_user, to_user, user_a, user_b)
-    elif (action in ['reject', 'remove']):
-        return remove_friend_status(from_user, to_user, user_a, user_b, action == 'remove')
-    elif (action == 'accept'):
-        return accept_friend_request(from_user, to_user, user_a, user_b)
-    else:
-        return Response({'error': "Invalid action"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Verify users exist
+        if not CustomUser.objects.filter(id=user_a).exists():
+            return Response({'error': f"Nonexistent user #{user_a}"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        if not CustomUser.objects.filter(id=user_b).exists():
+            return Response({'error': f"Nonexistent user #{user_b}"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Process based on action
+        if action == 'send':
+            return send_friend_request(from_user, to_user, user_a, user_b)
+        elif action in ['reject', 'remove']:
+            return remove_friend_status(from_user, to_user, user_a, user_b, action == 'remove')
+        elif action == 'accept':
+            return accept_friend_request(from_user, to_user, user_a, user_b)
+        else:
+            return Response({'error': "Invalid action"}, status=status.HTTP_400_BAD_REQUEST)
+            
+    except Exception as e:
+        # Log the error for debugging
+        print(f"Error in update_friend: {str(e)}")
+        return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 def send_friend_request(from_user, to_user, user_a, user_b):
 
@@ -138,36 +159,124 @@ def send_friend_request(from_user, to_user, user_a, user_b):
 # Can be used to remove an unaccepted friend request, OR
 # can remove an existing friendship, depending on 'accepted'
 def remove_friend_status(from_user, to_user, user_a, user_b, accepted):
+    """Remove a friend request or friendship between two users"""
+    try:
+        # Look for the friend request/status
+        requests = FriendStatus.objects.filter(user_a=user_a, user_b=user_b, accepted=accepted)
+        if not requests.exists():
+            return Response({'error': "Friend status doesn't exist"}, status=status.HTTP_400_BAD_REQUEST)
 
-    # This friend request must exist in the DB
-    # However, the request cannot already be accepted
-    requests = FriendStatus.objects.filter(user_a=user_a, user_b=user_b, accepted=accepted)
-    if (not requests.exists()):
-        return Response({'error': "Friend status doesn't exist"}, status=status.HTTP_400_BAD_REQUEST)
+        # Remove the friendship from the database
+        req = requests[0]
+        req.delete()
 
-    # Remove the friendship from the database
-    req = requests[0]
-    req.delete()
-
-    return Response({'status': "Success"})
+        return Response({'status': "Success"})
+    except Exception as e:
+        # Log the error for debugging
+        print(f"Error in remove_friend_status: {str(e)}")
+        return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 def accept_friend_request(from_user, to_user, user_a, user_b):
+    """Accept a friend request between two users"""
+    try:
+        # Look for the friend request
+        requests = FriendStatus.objects.filter(user_a=user_a, user_b=user_b, accepted=False)
+        if not requests.exists():
+            return Response({'error': "Friend request doesn't exist"}, status=status.HTTP_400_BAD_REQUEST)
 
-    # This friend request must exist in the DB
-    # However, the request cannot already be accepted
-    requests = FriendStatus.objects.filter(user_a=user_a, user_b=user_b, accepted=False)
-    if (not requests.exists()):
-        return Response({'error': "Friend request doesn't exist"}, status=status.HTTP_400_BAD_REQUEST)
+        # Change the request to be accepted
+        req = requests[0]
+        req.accepted = True
+        req.save()
 
-    # Change the request to be accepted
-    req = requests[0]
-    req.accepted = True
-    req.save()
-
-    return Response({'status': "Success"})
+        return Response({'status': "Success"})
+    except Exception as e:
+        # Log the error for debugging
+        print(f"Error in accept_friend_request: {str(e)}")
+        return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 # Check whether the server is online
 @api_view(['GET'])
 def health_check(request):
     return Response({"status":"healthy"})
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_friend_requests(request):
+    """Get all pending friend requests for the current user"""
+    try:
+        current_user_id = request.user.id
+        
+        # Find pending friend requests where current user is the recipient
+        # This query is simplified from the previous one to avoid errors
+        pending_requests = FriendStatus.objects.filter(
+            (
+                Q(user_a=current_user_id) | Q(user_b=current_user_id)
+            ) & ~Q(from_user=current_user_id),
+            accepted=False
+        )
+        
+        # Format the response data
+        result = []
+        for req in pending_requests:
+            # The from_user is the sender
+            from_user_id = req.from_user
+            
+            try:
+                sender = CustomUser.objects.get(id=from_user_id)
+                result.append({
+                    'id': req.id,
+                    'from': {
+                        'id': sender.id,
+                        'username': sender.username,
+                        'user_type': sender.user_type,
+                        'bio': sender.bio or ""
+                    }
+                })
+            except CustomUser.DoesNotExist:
+                # Skip if user doesn't exist
+                continue
+        
+        return Response(result)
+    except Exception as e:
+        print(f"Error getting friend requests: {str(e)}")
+        return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_friends(request):
+    """Get all accepted friends for the current user"""
+    current_user_id = request.user.id
+    
+    # Find accepted friend relationships where current user is either user_a or user_b
+    friends_a = FriendStatus.objects.filter(user_a=current_user_id, accepted=True)
+    friends_b = FriendStatus.objects.filter(user_b=current_user_id, accepted=True)
+    
+    # Extract the friend IDs
+    friend_ids = []
+    for fs in friends_a:
+        # If user_a is the current user, then user_b is the friend
+        friend_ids.append(fs.user_b)
+    
+    for fs in friends_b:
+        # If user_b is the current user, then user_a is the friend
+        friend_ids.append(fs.user_a)
+    
+    # Get the friend details
+    result = []
+    for friend_id in friend_ids:
+        try:
+            friend = CustomUser.objects.get(id=friend_id)
+            result.append({
+                'id': friend.id,
+                'username': friend.username,
+                'user_type': friend.user_type,
+                'bio': friend.bio or ""
+            })
+        except CustomUser.DoesNotExist:
+            # Skip if the user no longer exists
+            continue
+    
+    return Response(result)
