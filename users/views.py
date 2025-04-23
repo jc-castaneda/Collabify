@@ -1,3 +1,4 @@
+from django.shortcuts import get_object_or_404 
 from django.db.utils import IntegrityError
 from django.shortcuts import render
 from rest_framework_simplejwt.views import TokenObtainPairView
@@ -16,7 +17,7 @@ from rest_framework import status
 from .models import CustomUser, Message
 from feed.models import Post
 from feed.serializers import PostSerializer
-from .serializers import UserSerializer
+from .serializers import UserSerializer, MessageSerializer
 
 
 
@@ -81,21 +82,16 @@ def get_all_users(request):
 
 # Get all public information about a user in JSON format
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def get_user_info(request, user_id):
+    """
+    Returns the serialized CustomUser, including
+    profile_picture_url now that serializers.py has been updated.
+    """
+    user = get_object_or_404(CustomUser, id=user_id)
+    serializer = UserSerializer(user, context={'request': request})
+    return Response(serializer.data)
 
-    try:
-        user = CustomUser.objects.get(pk=int(user_id))
-        return Response({
-            'id': user_id,
-            'username': user.username,
-            'bio': user.bio,
-            'email': user.email,
-            'interests': user.interests,
-            'skills': user.skills,
-            'user_type': str(user.user_type)
-        })
-    except (ValueError, users.models.CustomUser.DoesNotExist):
-        return Response({'error': "Invalid user ID"}, status=status.HTTP_400_BAD_REQUEST)
 
 # Send a friend request from user A to user B
 @api_view(['POST'])
@@ -422,5 +418,23 @@ def messages(request, user_id):
             
     except CustomUser.DoesNotExist:
         return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def upload_profile_picture(request):
+    try:
+        user = request.user
+        if 'image' not in request.FILES:
+            return Response({"error": "No image provided"}, status=status.HTTP_400_BAD_REQUEST)
+
+        user.profile_picture = request.FILES['image']
+        user.save()
+
+        return Response({
+            "message": "Profile picture updated successfully",
+            "profile_picture_url": request.build_absolute_uri(user.profile_picture.url) if user.profile_picture else None
+        })
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
