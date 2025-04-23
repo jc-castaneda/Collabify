@@ -14,6 +14,10 @@ urlpatterns = [
     path('api/all_users', users.views.get_all_users, name='all_users'),
     path('api/user_info/<int:user_id>', users.views.get_user_info, name='user_info'),
     path('api/update_friend/', users.views.update_friend, name='update_friend'),
+    path('api/user_posts/<int:user_id>/', users.views.user_posts, name='user-posts'),
+    path('api/update_profile/<int:user_id>/', users.views.update_profile, name='update-profile'),
+    path('api/conversations/', users.views.conversations, name='conversations'),
+    path('api/messages/<int:user_id>/', users.views.messages, name='messages'),
 
     # JWT Refresh URLs
     path('api/refresh/', TokenRefreshView.as_view(), name='token_refresh'),

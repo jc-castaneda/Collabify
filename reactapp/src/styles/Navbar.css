@@ -189,3 +189,51 @@
       cursor: pointer;
     }
   }
+  /* In Navbar.css */
+@media screen and (max-width: 768px) {
+  .nav-menu {
+    padding-top: 20px;
+  }
+  
+  .nav-item {
+    height: 60px;
+  }
+  
+  .nav-link {
+    padding: 15px 20px;
+    font-size: 1.1rem;
+  }
+  
+  .touch-friendly .nav-link {
+    min-height: 44px; /* Apple's recommended touch target size */
+  }
+  
+  .hamburger {
+    width: 35px;
+    height: 25px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .nav-menu.active {
+    padding-top: 15px;
+  }
+
+  .nav-item {
+    width: 100%;
+  }
+
+  .nav-link {
+    width: 100%;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: flex-start;
+    font-size: 18px;
+  }
+
+  .profile-circle {
+    width: 30px;
+    height: 30px;
+    margin-right: 10px;
+  }
+}

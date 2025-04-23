@@ -1,0 +1,298 @@
+.messages-page {
+    padding: 30px 20px;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  
+  .messages-container {
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    padding: 30px;
+  }
+  
+  .messages-header {
+    margin-bottom: 30px;
+  }
+  
+  .messages-header h1 {
+    margin: 0;
+    font-size: 2rem;
+    background: linear-gradient(
+      to right,
+      var(--collabify-gradient-start),
+      var(--collabify-gradient-end)
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  .messages-loading {
+    text-align: center;
+    padding: 60px 0;
+    color: var(--collabify-gray);
+  }
+  
+  .loading-spinner {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 3px solid rgba(0, 0, 0, 0.1);
+    border-top-color: var(--collabify-gradient-start);
+    animation: spin 1s infinite linear;
+    margin: 0 auto 20px;
+  }
+  
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+  
+  .error-message {
+    background-color: #fde2e2;
+    color: #e74c3c;
+    padding: 12px 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+  }
+  
+  .no-messages {
+    text-align: center;
+    padding: 40px 0;
+    color: var(--collabify-gray);
+  }
+  
+  .discover-button {
+    display: inline-block;
+    margin-top: 15px;
+    padding: 10px 20px;
+    background: linear-gradient(
+      to right,
+      var(--collabify-gradient-start),
+      var(--collabify-gradient-end)
+    );
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: transform 0.2s ease;
+  }
+  
+  .discover-button:hover {
+    transform: translateY(-2px);
+  }
+  
+  .conversations-list {
+    margin-bottom: 40px;
+  }
+  
+  .conversations-list h2,
+  .friends-list h2 {
+    margin: 0 0 20px 0;
+    font-size: 1.5rem;
+    color: var(--collabify-dark);
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  }
+  
+  .conversation-item {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    border-radius: 12px;
+    text-decoration: none;
+    color: var(--collabify-dark);
+    transition: background-color 0.2s ease;
+    margin-bottom: 10px;
+  }
+  
+  .conversation-item:hover {
+    background-color: var(--collabify-light);
+  }
+  
+  .user-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: linear-gradient(
+      to right,
+      var(--collabify-gradient-start),
+      var(--collabify-gradient-end)
+    );
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-right: 15px;
+    flex-shrink: 0;
+  }
+  
+  .conversation-content {
+    flex: 1;
+    min-width: 0; /* For text truncation to work */
+  }
+  
+  .conversation-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+  }
+  
+  .user-name {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-right: 10px;
+  }
+  
+  .user-type {
+    font-size: 0.8rem;
+    padding: 2px 8px;
+    border-radius: 10px;
+    background: linear-gradient(
+      to right,
+      var(--collabify-gradient-start),
+      var(--collabify-gradient-end)
+    );
+    color: white;
+    font-weight: 500;
+  }
+  
+  .last-message {
+    margin: 0;
+    color: var(--collabify-gray);
+    font-size: 0.9rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .conversation-meta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    margin-left: 15px;
+  }
+  
+  .message-time {
+    font-size: 0.8rem;
+    color: var(--collabify-gray);
+    margin-bottom: 5px;
+  }
+  
+  .unread-badge {
+    display: inline-block;
+    min-width: 20px;
+    height: 20px;
+    border-radius: 10px;
+    background: linear-gradient(
+      to right,
+      var(--collabify-gradient-start),
+      var(--collabify-gradient-end)
+    );
+    color: white;
+    font-size: 0.8rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 6px;
+  }
+  
+  .friends-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 15px;
+  }
+  
+  .friend-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 15px;
+    border-radius: 12px;
+    background-color: var(--collabify-light);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    cursor: pointer;
+  }
+  
+  .friend-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  }
+  
+  .friend-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: linear-gradient(
+      to right,
+      var(--collabify-gradient-start),
+      var(--collabify-gradient-end)
+    );
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+  
+  .friend-info {
+    text-align: center;
+    margin-bottom: 15px;
+  }
+  
+  .friend-name {
+    margin: 0 0 5px 0;
+    font-size: 1.1rem;
+  }
+  
+  .friend-type {
+    font-size: 0.8rem;
+    padding: 2px 8px;
+    border-radius: 10px;
+    background: linear-gradient(
+      to right,
+      var(--collabify-gradient-start),
+      var(--collabify-gradient-end)
+    );
+    color: white;
+    font-weight: 500;
+  }
+  
+  .message-button {
+    padding: 8px 15px;
+    background: linear-gradient(
+      to right,
+      var(--collabify-gradient-start),
+      var(--collabify-gradient-end)
+    );
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+  }
+  
+  .message-button:hover {
+    transform: translateY(-2px);
+  }
+  
+  @media (max-width: 600px) {
+    .messages-page {
+      padding: 15px;
+    }
+    
+    .messages-container {
+      padding: 20px 15px;
+    }
+    
+    .friends-grid {
+      grid-template-columns: 1fr;
+    }
+  }

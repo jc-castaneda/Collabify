@@ -12,8 +12,16 @@ import Register from "./pages/Register";
 import UsersPage from "./pages/UsersPage";
 import UserDetails from "./pages/UserDetails";
 import FriendsPage from "./pages/FriendsPage";
+import FeedPage from "./pages/FeedPage";
+import PostDetailPage from "./pages/PostDetailPage";
+import UploadPage from "./pages/UploadPage";
+import PostEditPage from "./pages/PostEditPage";
+import ProfilePage from "./pages/ProfilePage";
+import MessagesPage from "./pages/MessagesPage";
+import ConversationPage from "./pages/ConversationPage";
 import { getAuthToken } from "./api";
 import "./App.css";
+import './styles/MobileEnhancements.css';
 
 // Protected route component
 const ProtectedRoute = ({ children }) => {
@@ -67,10 +75,18 @@ function App() {
             }
           />
           <Route
-            path="/messages"
+            path="/feed"
             element={
               <ProtectedRoute>
-                <div>Messages Coming Soon</div>
+                <FeedPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/posts/:id"
+            element={
+              <ProtectedRoute>
+                <PostDetailPage />
               </ProtectedRoute>
             }
           />
@@ -78,7 +94,31 @@ function App() {
             path="/upload"
             element={
               <ProtectedRoute>
-                <div>Upload Music Coming Soon</div>
+                <UploadPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/messages"
+            element={
+              <ProtectedRoute>
+                <MessagesPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/messages/:userId"
+            element={
+              <ProtectedRoute>
+                <ConversationPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/posts/:id/edit"
+            element={
+              <ProtectedRoute>
+                <PostEditPage />
               </ProtectedRoute>
             }
           />
@@ -86,7 +126,7 @@ function App() {
             path="/profile"
             element={
               <ProtectedRoute>
-                <div>Your Profile Coming Soon</div>
+                <ProfilePage />
               </ProtectedRoute>
             }
           />

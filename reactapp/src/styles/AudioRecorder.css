@@ -1,0 +1,165 @@
+.audio-recorder {
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  
+  .recorder-error {
+    background-color: #fde2e2;
+    color: #e74c3c;
+    padding: 10px 15px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    font-size: 0.9rem;
+  }
+  
+  .recorder-display {
+    text-align: center;
+    padding: 20px 0;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    background-color: var(--collabify-light);
+  }
+  
+  .recording-indicator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+  
+  .recording-dot {
+    width: 12px;
+    height: 12px;
+    background-color: #e74c3c;
+    border-radius: 50%;
+    animation: pulse 1.5s infinite;
+  }
+  
+  @keyframes pulse {
+    0% {
+      transform: scale(0.95);
+      box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.7);
+    }
+    70% {
+      transform: scale(1);
+      box-shadow: 0 0 0 10px rgba(231, 76, 60, 0);
+    }
+    100% {
+      transform: scale(0.95);
+      box-shadow: 0 0 0 0 rgba(231, 76, 60, 0);
+    }
+  }
+  
+  .recording-time {
+    font-size: 1.2rem;
+    font-weight: 600;
+  }
+  
+  .recorder-ready {
+    font-size: 1.1rem;
+    color: var(--collabify-gray);
+  }
+  
+  .recorder-controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .start-button, .stop-button {
+    padding: 12px 25px;
+    border: none;
+    border-radius: 25px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .start-button {
+    background: linear-gradient(
+      to right,
+      var(--collabify-gradient-start),
+      var(--collabify-gradient-end)
+    );
+    color: white;
+  }
+  
+  .start-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(90, 49, 230, 0.3);
+  }
+  
+  .stop-button {
+    background-color: #e74c3c;
+    color: white;
+  }
+  
+  .stop-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+  }
+  
+  .playback-controls {
+    width: 100%;
+  }
+  
+  .playback-controls audio {
+    width: 100%;
+    margin-bottom: 15px;
+  }
+  
+  .recording-actions {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+  }
+  
+  .discard-button, .save-button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .discard-button {
+    background-color: var(--collabify-light);
+    color: var(--collabify-dark);
+  }
+  
+  .discard-button:hover {
+    background-color: #e5e5e7;
+  }
+  
+  .save-button {
+    background: linear-gradient(
+      to right,
+      var(--collabify-gradient-start),
+      var(--collabify-gradient-end)
+    );
+    color: white;
+  }
+  
+  .save-button:hover {
+    transform: translateY(-2px);
+  }
+  
+  @media (max-width: 768px) {
+    .audio-recorder {
+      padding: 15px;
+    }
+    
+    .recording-actions {
+      flex-direction: column;
+      gap: 10px;
+    }
+    
+    .discard-button, .save-button {
+      width: 100%;
+    }
+  }

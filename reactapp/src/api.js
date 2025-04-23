@@ -301,3 +301,168 @@ export const removeFriend = async (friendId) => {
     action: "remove",
   });
 };
+
+// Post functions
+export const fetchPosts = async () => {
+  return apiRequest("posts/");
+};
+
+export const fetchPostById = async (postId) => {
+  return apiRequest(`posts/${postId}/`);
+};
+
+export const createPost = async (postData) => {
+  const url = `${API_URL}posts/`;
+  const token = getAuthToken();
+
+  const headers = {
+    Authorization: `Bearer ${token}`,
+  };
+  // Don't set Content-Type with FormData - browser will set it with boundary
+
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers,
+      body: postData,
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(
+        errorData.message || errorData.error || "Failed to create post"
+      );
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error creating post:", error);
+    throw error;
+  }
+};
+
+// Add to your api.js file
+export const updatePost = async (postId, postData) => {
+  const url = `${API_URL}posts/${postId}/`;
+  const token = getAuthToken();
+  
+  const headers = {
+    "Authorization": `Bearer ${token}`
+  };
+  
+  try {
+    const response = await fetch(url, {
+      method: "PUT",
+      headers,
+      body: postData // FormData object
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || errorData.error || "Failed to update post");
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error updating post:", error);
+    throw error;
+  }
+};
+
+export const deletePost = async (postId) => {
+  return apiRequest(`posts/${postId}/`, "DELETE");
+};
+
+export const likePost = async (postId) => {
+  return apiRequest(`posts/${postId}/like/`, "POST");
+};
+
+// Comment functions
+export const fetchComments = async (postId) => {
+  return apiRequest(`posts/${postId}/comments/`);
+};
+
+export const createComment = async (postId, commentData) => {
+  return apiRequest(`posts/${postId}/comments/`, "POST", commentData);
+};
+
+// Get image URL with proper auth token
+export const getPostImageUrl = (postId) => {
+  return `${API_URL}posts/${postId}/image/`;
+};
+
+// Get song URL with proper auth token
+export const getPostSongUrl = (postId) => {
+  return `${API_URL}posts/${postId}/song/`;
+};
+
+// Use this for media files, which need direct fetch with auth headers
+export const fetchWithAuth = async (url) => {
+  const token = getAuthToken();
+  
+  const headers = {
+    "Authorization": `Bearer ${token}`
+  };
+  
+  try {
+    const response = await fetch(url, {
+      method: "GET",
+      headers
+    });
+    
+    if (!response.ok) {
+      throw new Error(`Failed to fetch: ${response.status} ${response.statusText}`);
+    }
+    
+    return response.blob();
+  } catch (error) {
+    console.error(`Fetch error:`, error);
+    throw error;
+  }
+};
+
+// Add these functions to api.js
+
+// Get current user's profile information
+export const fetchCurrentUserProfile = async () => {
+  const userId = localStorage.getItem("userId");
+  if (!userId) {
+    throw new Error("User ID not found. Please log in again.");
+  }
+  return apiRequest(`user_info/${userId}`);
+};
+
+// Update user profile
+export const updateUserProfile = async (profileData) => {
+  const userId = localStorage.getItem("userId");
+  if (!userId) {
+    throw new Error("User ID not found. Please log in again.");
+  }
+  return apiRequest(`update_profile/${userId}`, "PUT", profileData);
+};
+
+// Get user's posts
+export const fetchUserPosts = async (userId = null) => {
+  const id = userId || localStorage.getItem("userId");
+  if (!id) {
+    throw new Error("User ID not found. Please log in again.");
+  }
+  return apiRequest(`user_posts/${id}`);
+};
+
+// Get all conversations for current user
+export const fetchConversations = async () => {
+  return apiRequest("conversations/");
+};
+
+// Get conversation details (messages) with a specific user
+export const fetchMessages = async (userId) => {
+  return apiRequest(`messages/${userId}/`);
+};
+
+// Send a message to a user
+export const sendMessage = async (receiverId, content) => {
+  return apiRequest(`messages/${receiverId}/`, "POST", {
+    content: content
+  });
+};

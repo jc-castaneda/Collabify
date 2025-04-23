@@ -31,3 +31,11 @@ class Comment(models.Model):
     author = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
+    timestamp = models.FloatField(null=True, blank=True)  # Store time in seconds
+    parent = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='replies')
+    
+    class Meta:
+        ordering = ['created_at']
+    
+    def __str__(self):
+        return f'Comment by {self.author.username} on post {self.post.id}'

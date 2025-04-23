@@ -1,0 +1,78 @@
+.feed-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  .feed-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+  }
+  
+  .feed-header h1 {
+    font-size: 2rem;
+    background: linear-gradient(
+      to right,
+      var(--collabify-gradient-start),
+      var(--collabify-gradient-end)
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin: 0;
+  }
+  
+  .feed-loading, .feed-error, .feed-empty {
+    text-align: center;
+    padding: 60px 0;
+    color: var(--collabify-gray);
+  }
+  
+  .loading-spinner {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 3px solid rgba(0, 0, 0, 0.1);
+    border-top-color: var(--collabify-gradient-start);
+    animation: spin 1s infinite linear;
+    margin: 0 auto 20px;
+  }
+  
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+  
+  .retry-button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 20px;
+    background: linear-gradient(
+      to right,
+      var(--collabify-gradient-start),
+      var(--collabify-gradient-end)
+    );
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 15px;
+  }
+  
+  .posts-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  @media (max-width: 600px) {
+    .feed-container {
+      padding: 15px;
+    }
+    
+    .feed-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 15px;
+    }
+  }
