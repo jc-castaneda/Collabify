@@ -1,3 +1,4 @@
+// src/components/CreatePostModal.js
 import React, { useState } from "react";
 import { createPost } from "../api";
 import AudioRecorder from "./AudioRecorder";
@@ -14,22 +15,21 @@ const CreatePostModal = ({ onClose, refreshFeed }) => {
   const [error, setError] = useState("");
   const [useRecorder, setUseRecorder] = useState(false);
 
+  // Called by AudioRecorder when you hit "Use This Recording"
   const handleRecordedAudio = (audioBlob) => {
-    // Create a File object from the blob
     const audioFile = new File([audioBlob], "recording.wav", {
       type: "audio/wav",
     });
     setSong(audioFile);
     setUseRecorder(false);
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (!title.trim()) {
       setError("Please enter a title");
       return;
     }
-
     if (!song && !description.trim()) {
       setError("Please upload a song or enter a description");
       return;
@@ -37,11 +37,9 @@ const CreatePostModal = ({ onClose, refreshFeed }) => {
 
     try {
       setIsSubmitting(true);
-
       const formData = new FormData();
       formData.append("title", title);
       formData.append("description", description);
-
       if (genre) formData.append("genre", genre);
       if (lookingFor) formData.append("looking_for", lookingFor);
       if (image) formData.append("image", image);
@@ -58,8 +56,14 @@ const CreatePostModal = ({ onClose, refreshFeed }) => {
   };
 
   return (
-    <div className="modal-overlay">
-      <div className="create-post-modal">
+    // Overlay: clicking here (outside the modal) will close
+    <div className="modal-overlay" onClick={onClose}>
+      {/* Inner modal: stop clicks from bubbling up */}
+      <div
+        className="create-post-modal"
+        onClick={(e) => e.stopPropagation()}
+        onMouseDown={(e) => e.stopPropagation()}
+      >
         <div className="modal-header">
           <h2>Share Your Music</h2>
           <button className="close-button" onClick={onClose}>
@@ -70,6 +74,7 @@ const CreatePostModal = ({ onClose, refreshFeed }) => {
         {error && <div className="error-message">{error}</div>}
 
         <form onSubmit={handleSubmit}>
+          {/* Title */}
           <div className="form-group">
             <label htmlFor="title">Title *</label>
             <input
@@ -82,6 +87,7 @@ const CreatePostModal = ({ onClose, refreshFeed }) => {
             />
           </div>
 
+          {/* Description */}
           <div className="form-group">
             <label htmlFor="description">Description</label>
             <textarea
@@ -93,6 +99,7 @@ const CreatePostModal = ({ onClose, refreshFeed }) => {
             />
           </div>
 
+          {/* Genre */}
           <div className="form-group">
             <label htmlFor="genre">Genre</label>
             <input
@@ -104,6 +111,7 @@ const CreatePostModal = ({ onClose, refreshFeed }) => {
             />
           </div>
 
+          {/* Looking For */}
           <div className="form-group">
             <label htmlFor="lookingFor">Looking For</label>
             <input
@@ -115,6 +123,7 @@ const CreatePostModal = ({ onClose, refreshFeed }) => {
             />
           </div>
 
+          {/* Cover Image */}
           <div className="form-group">
             <label htmlFor="image">Cover Image</label>
             <div className="image-upload-area">
@@ -157,6 +166,7 @@ const CreatePostModal = ({ onClose, refreshFeed }) => {
             </div>
           </div>
 
+          {/* Audio File / Recorder */}
           <div className="form-group">
             <label htmlFor="song">Audio File</label>
 
@@ -215,8 +225,13 @@ const CreatePostModal = ({ onClose, refreshFeed }) => {
             )}
           </div>
 
+          {/* Buttons */}
           <div className="form-actions">
-            <button type="button" onClick={onClose} className="cancel-button">
+            <button
+              type="button"
+              onClick={onClose}
+              className="cancel-button"
+            >
               Cancel
             </button>
             <button

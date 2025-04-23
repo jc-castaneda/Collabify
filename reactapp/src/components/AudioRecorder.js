@@ -1,3 +1,4 @@
+// src/components/AudioRecorder.js
 import React, { useRef, useState, useEffect } from 'react';
 import '../styles/AudioRecorder.css';
 
@@ -47,7 +48,6 @@ const AudioRecorder = ({ onSave }) => {
     if (mediaRecorderRef.current && isRecording) {
       mediaRecorderRef.current.stop();
       streamRef.current.getTracks().forEach(track => track.stop());
-      
       clearInterval(timerRef.current);
     }
   };
@@ -61,11 +61,11 @@ const AudioRecorder = ({ onSave }) => {
   
   // Process recording when stopped
   const handleRecordingStop = () => {
-    const audioBlob = new Blob(chunksRef.current, { type: 'audio/wav' });
-    const audioUrl = URL.createObjectURL(audioBlob);
+    const blob = new Blob(chunksRef.current, { type: 'audio/wav' });
+    const url = URL.createObjectURL(blob);
     
-    setAudioBlob(audioBlob);
-    setAudioUrl(audioUrl);
+    setAudioBlob(blob);
+    setAudioUrl(url);
     setIsRecording(false);
   };
   
@@ -85,9 +85,9 @@ const AudioRecorder = ({ onSave }) => {
   
   // Format time display
   const formatTime = (seconds) => {
-    const minutes = Math.floor(seconds / 60);
-    const remainingSeconds = seconds % 60;
-    return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+    const m = Math.floor(seconds / 60);
+    const s = seconds % 60;
+    return `${m}:${s.toString().padStart(2, '0')}`;
   };
   
   // Clean up on unmount
@@ -96,11 +96,9 @@ const AudioRecorder = ({ onSave }) => {
       if (streamRef.current) {
         streamRef.current.getTracks().forEach(track => track.stop());
       }
-      
       if (timerRef.current) {
         clearInterval(timerRef.current);
       }
-      
       if (audioUrl) {
         URL.revokeObjectURL(audioUrl);
       }
@@ -127,6 +125,7 @@ const AudioRecorder = ({ onSave }) => {
       <div className="recorder-controls">
         {!isRecording && !audioUrl && (
           <button 
+            type="button"
             className="start-button"
             onClick={startRecording}
           >
@@ -136,6 +135,7 @@ const AudioRecorder = ({ onSave }) => {
         
         {isRecording && (
           <button 
+            type="button"
             className="stop-button"
             onClick={stopRecording}
           >
@@ -149,12 +149,14 @@ const AudioRecorder = ({ onSave }) => {
             
             <div className="recording-actions">
               <button 
+                type="button"
                 className="discard-button"
                 onClick={handleDiscard}
               >
                 Discard
               </button>
               <button 
+                type="button"
                 className="save-button"
                 onClick={handleSave}
               >
