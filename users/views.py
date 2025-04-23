@@ -1,23 +1,21 @@
-from django.shortcuts import get_object_or_404 
+from django.shortcuts import get_object_or_404, render
 from django.db.utils import IntegrityError
-from django.shortcuts import render
+from django.db.models import Q
+from django.views.decorators.csrf import csrf_exempt
+
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework.response import Response
-from rest_framework.decorators import api_view
-from django.views.decorators.csrf import csrf_exempt
-from django.db.models import Q
+
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from users.models import CustomUser, FriendStatus
-import users.models
-from users.models import *
-from django.contrib.auth import authenticate
+from rest_framework.response import Response
 from rest_framework import status
-from .models import CustomUser, Message
+
+from .models import CustomUser, FriendStatus, Message
+from .serializers import UserSerializer, MessageSerializer
+
 from feed.models import Post
 from feed.serializers import PostSerializer
-from .serializers import UserSerializer, MessageSerializer
 
 
 
@@ -82,15 +80,12 @@ def get_all_users(request):
     )
     return Response({'users': serializer.data})
 
-@api_view(['GET'])
-@permission_classes([AllowAny])
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
 def get_user_info(request, user_id):
     user = get_object_or_404(CustomUser, id=user_id)
-    serializer = UserSerializer(
-        user,
-        context={'request': request}    # ← same here
-    )
-    return Response(serializer.data)
+    serializer = UserSerializer(user, context={"request": request})
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
 # Send a friend request from user A to user B
 @api_view(['POST'])
