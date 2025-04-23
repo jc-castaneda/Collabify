@@ -2,11 +2,12 @@ from rest_framework import serializers
 from .models import CustomUser, Message
 
 class UserSerializer(serializers.ModelSerializer):
-    # Convert JSONField to native Python types
+    # New! this will return the full URL to the image
+    profile_picture = serializers.ImageField(read_only=True)
+
+    # your existing SerializerMethodFields…
     skills = serializers.SerializerMethodField()
     interests = serializers.SerializerMethodField()
-    # NEW: full URL for the profile picture
-    profile_picture_url = serializers.SerializerMethodField()
 
     class Meta:
         model = CustomUser
@@ -19,8 +20,9 @@ class UserSerializer(serializers.ModelSerializer):
             'skills',
             'interests',
             'date_joined',
-            'profile_picture_url',  # ← added here
+            'profile_picture',    # ← add this
         ]
+
 
     def get_skills(self, obj):
         if hasattr(obj, 'skills') and obj.skills:

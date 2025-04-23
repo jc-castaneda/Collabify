@@ -21,6 +21,7 @@ class CustomUser(AbstractUser):
     # Add the genres field that the serializer is expecting
     genres = models.CharField(max_length=255, blank=True, null=True)
     user_type = models.CharField(max_length=8, choices=UserType.choices)
+    profile_picture = models.ImageField(upload_to='profile_pictures/', null=True, blank=True)
 
     # Returns username
     def __str__(self):

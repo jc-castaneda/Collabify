@@ -8,7 +8,7 @@ from rest_framework.decorators import api_view
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Q
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from users.models import CustomUser, FriendStatus
 import users.models
 from users.models import *
@@ -72,26 +72,25 @@ def logout_user(request):
 # Return an array containing basic information about all users
 # Used solely for the '/users' home page
 @api_view(['GET'])
+@permission_classes([AllowAny])
 def get_all_users(request):
+    users = CustomUser.objects.all()
+    serializer = UserSerializer(
+        users,
+        many=True,
+        context={'request': request}    # ← so DRF can build full URLs
+    )
+    return Response({'users': serializer.data})
 
-    return Response({'users': [{
-            'username': user.username,
-            'id': user.id
-        } for user in CustomUser.objects.all()
-    ]})
-
-# Get all public information about a user in JSON format
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
+@permission_classes([AllowAny])
 def get_user_info(request, user_id):
-    """
-    Returns the serialized CustomUser, including
-    profile_picture_url now that serializers.py has been updated.
-    """
     user = get_object_or_404(CustomUser, id=user_id)
-    serializer = UserSerializer(user, context={'request': request})
+    serializer = UserSerializer(
+        user,
+        context={'request': request}    # ← same here
+    )
     return Response(serializer.data)
-
 
 # Send a friend request from user A to user B
 @api_view(['POST'])

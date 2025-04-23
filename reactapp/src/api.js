@@ -51,7 +51,7 @@ export const apiRequest = async (endpoint, method = "GET", data = null) => {
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
       throw new Error(
-        errorData.message || errorData.error || "An error occurred",
+        errorData.message || errorData.error || "An error occurred"
       );
     }
 
@@ -345,21 +345,23 @@ export const createPost = async (postData) => {
 export const updatePost = async (postId, postData) => {
   const url = `${API_URL}posts/${postId}/`;
   const token = getAuthToken();
-  
+
   const headers = {
-    "Authorization": `Bearer ${token}`
+    Authorization: `Bearer ${token}`,
   };
-  
+
   try {
     const response = await fetch(url, {
       method: "PUT",
       headers,
-      body: postData // FormData object
+      body: postData, // FormData object
     });
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.message || errorData.error || "Failed to update post");
+      throw new Error(
+        errorData.message || errorData.error || "Failed to update post"
+      );
     }
 
     return await response.json();
@@ -399,21 +401,23 @@ export const getPostSongUrl = (postId) => {
 // Use this for media files, which need direct fetch with auth headers
 export const fetchWithAuth = async (url) => {
   const token = getAuthToken();
-  
+
   const headers = {
-    "Authorization": `Bearer ${token}`
+    Authorization: `Bearer ${token}`,
   };
-  
+
   try {
     const response = await fetch(url, {
       method: "GET",
-      headers
+      headers,
     });
-    
+
     if (!response.ok) {
-      throw new Error(`Failed to fetch: ${response.status} ${response.statusText}`);
+      throw new Error(
+        `Failed to fetch: ${response.status} ${response.statusText}`
+      );
     }
-    
+
     return response.blob();
   } catch (error) {
     console.error(`Fetch error:`, error);
@@ -463,6 +467,45 @@ export const fetchMessages = async (userId) => {
 // Send a message to a user
 export const sendMessage = async (receiverId, content) => {
   return apiRequest(`messages/${receiverId}/`, "POST", {
-    content: content
+    content: content,
   });
+};
+
+export const uploadProfilePicture = async (imageFile) => {
+  const formData = new FormData();
+  formData.append("image", imageFile);
+
+  const url = `${API_URL}upload_profile_picture/`;
+  const token = getAuthToken();
+
+  const headers = {
+    Authorization: `Bearer ${token}`,
+  };
+
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers,
+      body: formData,
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(
+        errorData.message ||
+          errorData.error ||
+          "Failed to upload profile picture"
+      );
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error uploading profile picture:", error);
+    throw error;
+  }
+};
+
+// Get profile picture URL
+export const getProfilePictureUrl = (userId) => {
+  return `${API_URL}user_profile_picture/${userId}/`;
 };

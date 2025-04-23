@@ -1,26 +1,12 @@
-import React, { useState } from 'react';
-import CreatePostModal from './CreatePostModal';
-import '../styles/CreatePostButton.css';
+import React from "react";
+import { Link } from "react-router-dom";
+import "../styles/CreatePostButton.css";  // assuming you have styles here
 
-const CreatePostButton = ({ refreshFeed }) => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
+const CreatePostButton = () => {
   return (
-    <>
-      <button 
-        className="create-post-button" 
-        onClick={() => setIsModalOpen(true)}
-      >
-        <span className="plus-icon">+</span> Share Your Music
-      </button>
-
-      {isModalOpen && (
-        <CreatePostModal 
-          onClose={() => setIsModalOpen(false)} 
-          refreshFeed={refreshFeed}
-        />
-      )}
-    </>
+    <Link to="/upload" className="create-post-btn">
+      Share Your Music
+    </Link>
   );
 };
 
