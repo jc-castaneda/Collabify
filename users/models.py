@@ -14,8 +14,8 @@ class CustomUser(AbstractUser):
         MUSICIAN = "2", "Musician"
         SINGER = "3", "Singer"
 
-    username = models.CharField(max_length = 64, unique=True)
-    password = models.CharField(max_length = 64)
+    username = models.CharField(max_length = 128, unique=True)
+    password = models.CharField(max_length = 128)
     email = models.CharField(max_length = 512, unique=True)
     bio = models.CharField(max_length = 512, blank=True, null=True)
     interests = models.JSONField(blank=True, null=True, default=dict)
