@@ -12,10 +12,10 @@ class CustomUser(AbstractUser):
         MUSICIAN = "2", "Musician"
         SINGER = "3", "Singer"
 
-    username = models.CharField(max_length=64, unique=True)
-    password = models.CharField(max_length=64)
-    email = models.CharField(max_length=512, unique=True)
-    bio = models.CharField(max_length=512, blank=True, null=True)
+    username = models.CharField(max_length = 512, unique=True)
+    password = models.CharField(max_length = 512)
+    email = models.CharField(max_length = 512, unique=True)
+    bio = models.CharField(max_length = 512, blank=True, null=True)
     interests = models.JSONField(blank=True, null=True, default=dict)
     skills = models.JSONField(blank=True, null=True, default=dict)
     # Add the genres field that the serializer is expecting
