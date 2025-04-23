@@ -1,5 +1,5 @@
 // Base API URL
-const API_URL = "http://localhost:8000/api/";
+const API_URL = process.env.REACT_APP_API_URL || "http://localhost:8000/api/";
 
 // Auth token management
 export const getAuthToken = () => {
@@ -51,7 +51,7 @@ export const apiRequest = async (endpoint, method = "GET", data = null) => {
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
       throw new Error(
-        errorData.message || errorData.error || "An error occurred"
+        errorData.message || errorData.error || "An error occurred",
       );
     }
 
