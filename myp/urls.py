@@ -42,6 +42,4 @@ urlpatterns = [
     path('upload_test/',          feed.views.upload_test,            name='upload_test'),
 ]
 
-# Serve media files during development
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

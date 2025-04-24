@@ -118,11 +118,16 @@ TEMPLATES = [
 
 # S T A T I C   &   M E D I A   F I L E S -------------------------
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles_build')
+
+MEDIA_URL = '/media/'
 
 # Media files (user uploads)
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+if is_local: # Development settings (DEBUG=True)
+    MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+    STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+else:
+    MEDIA_ROOT = '/var/data/media'
 
 # I18N & T Z ------------------------------------------------------
 LANGUAGE_CODE = 'en-us'
