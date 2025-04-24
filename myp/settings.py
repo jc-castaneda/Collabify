@@ -38,7 +38,7 @@ if DEBUG:
 else:
     CORS_ALLOWED_ORIGINS = [
         "https://collabify-is5n.onrender.com",
-
+    ]
 
 # A P P S   &   M I D D L E W A R E -------------------------------
 INSTALLED_APPS = [
