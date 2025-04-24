@@ -44,7 +44,7 @@ if DEBUG:
     CORS_ALLOW_ALL_ORIGINS = True
 else:
     CORS_ALLOWED_ORIGINS = [
-        "https://collabify-is5n.onrender.com"
+        "https://collabify-is5n.onrender.com",
         # Add any other production frontend URLs here
     ]
 
