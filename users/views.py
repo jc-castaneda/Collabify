@@ -1,20 +1,23 @@
+from django.shortcuts import get_object_or_404, render
 from django.db.utils import IntegrityError
-from django.shortcuts import render
+from django.db.models import Q
+from django.views.decorators.csrf import csrf_exempt
+
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework.response import Response
-from rest_framework.decorators import api_view
-from django.views.decorators.csrf import csrf_exempt
-from django.db.models import Q
+
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
-from users.models import CustomUser, FriendStatus
-# Import your CustomUser model instead of the default User
-import users.models
-from users.models import *
-from django.contrib.auth import authenticate
 from rest_framework import status
+
+from .models import CustomUser, FriendStatus, Message
+from .serializers import UserSerializer, MessageSerializer
+
+from feed.models import Post
+from feed.serializers import PostSerializer
+
+
 
 class MyTokenObtainPairView(TokenObtainPairView):
     pass  # Inherits default JWT behavior
@@ -67,31 +70,22 @@ def logout_user(request):
 # Return an array containing basic information about all users
 # Used solely for the '/users' home page
 @api_view(['GET'])
+@permission_classes([AllowAny])
 def get_all_users(request):
+    users = CustomUser.objects.all()
+    serializer = UserSerializer(
+        users,
+        many=True,
+        context={'request': request}    # ← so DRF can build full URLs
+    )
+    return Response({'users': serializer.data})
 
-    return Response({'users': [{
-            'username': user.username,
-            'id': user.id
-        } for user in CustomUser.objects.all()
-    ]})
-
-# Get all public information about a user in JSON format
-@api_view(['GET'])
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
 def get_user_info(request, user_id):
-
-    try:
-        user = CustomUser.objects.get(pk=int(user_id))
-        return Response({
-            'id': user_id,
-            'username': user.username,
-            'bio': user.bio,
-            'email': user.email,
-            'interests': user.interests,
-            'skills': user.skills,
-            'user_type': str(user.user_type)
-        })
-    except (ValueError, users.models.CustomUser.DoesNotExist):
-        return Response({'error': "Invalid user ID"}, status=status.HTTP_400_BAD_REQUEST)
+    user = get_object_or_404(CustomUser, id=user_id)
+    serializer = UserSerializer(user, context={"request": request})
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
 # Send a friend request from user A to user B
 @api_view(['POST'])
@@ -280,3 +274,161 @@ def get_friends(request):
             continue
     
     return Response(result)
+
+# User posts endpoint
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def user_posts(request, user_id):
+    try:
+        user = CustomUser.objects.get(pk=user_id)
+        posts = Post.objects.filter(creator=user).order_by('-created_at')
+        serializer = PostSerializer(posts, many=True, context={'request': request})
+        return Response(serializer.data)
+    except CustomUser.DoesNotExist:
+        return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+# Update profile endpoint
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def update_profile(request, user_id):
+    try:
+        # Ensure user can only update their own profile
+        if request.user.id != int(user_id):
+            return Response({"error": "Not authorized"}, status=status.HTTP_403_FORBIDDEN)
+        
+        user = request.user
+        serializer = UserSerializer(user, data=request.data, partial=True)
+        
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+# Get all conversations
+# Get all conversations
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def conversations(request):
+    try:
+        user = request.user
+        
+        # Get all users the current user has messaged or received messages from
+        message_partners = CustomUser.objects.filter(
+            Q(sent_messages__receiver=user) | Q(received_messages__sender=user)
+        ).distinct()
+        
+        conversation_data = []
+        
+        for partner in message_partners:
+            # Get last message in conversation
+            last_message = Message.objects.filter(
+                Q(sender=user, receiver=partner) | Q(sender=partner, receiver=user)
+            ).order_by('-created_at').first()
+            
+            # Count unread messages
+            unread_count = Message.objects.filter(
+                sender=partner, 
+                receiver=user, 
+                is_read=False
+            ).count()
+            
+            if last_message:
+                # Create a basic user dictionary with only fields we know exist
+                partner_data = {
+                    "id": partner.id,
+                    "username": partner.username,
+                    "user_type": partner.user_type,
+                    "bio": partner.bio or ""
+                }
+                
+                conversation_data.append({
+                    "user": partner_data,
+                    "last_message": last_message.content,
+                    "last_message_time": last_message.created_at,
+                    "unread_count": unread_count
+                })
+        
+        # Sort by last message time
+        conversation_data.sort(key=lambda x: x["last_message_time"], reverse=True)
+        
+        return Response(conversation_data)
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+# Get or send messages
+@api_view(['GET', 'POST'])
+@permission_classes([IsAuthenticated])
+def messages(request, user_id):
+    try:
+        partner = CustomUser.objects.get(pk=user_id)
+        user = request.user
+        
+        if request.method == 'GET':
+            # Get all messages between current user and partner
+            messages_list = Message.objects.filter(
+                Q(sender=user, receiver=partner) | Q(sender=partner, receiver=user)
+            ).order_by('created_at')
+            
+            # Mark messages from partner as read
+            unread_messages = messages_list.filter(sender=partner, receiver=user, is_read=False)
+            for message in unread_messages:
+                message.is_read = True
+                message.save()
+            
+            # Serialize messages with is_self flag
+            message_data = []
+            for message in messages_list:
+                data = {
+                    "id": message.id,
+                    "content": message.content,
+                    "created_at": message.created_at,
+                    "is_self": message.sender == user
+                }
+                message_data.append(data)
+            
+            return Response(message_data)
+        
+        elif request.method == 'POST':
+            # Create new message
+            content = request.data.get('content')
+            
+            if not content:
+                return Response({"error": "Message content is required"}, status=status.HTTP_400_BAD_REQUEST)
+            
+            message = Message(sender=user, receiver=partner, content=content)
+            message.save()
+            
+            return Response({
+                "id": message.id,
+                "content": message.content,
+                "created_at": message.created_at,
+                "is_self": True
+            }, status=status.HTTP_201_CREATED)
+            
+    except CustomUser.DoesNotExist:
+        return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def upload_profile_picture(request):
+    try:
+        user = request.user
+        if 'image' not in request.FILES:
+            return Response({"error": "No image provided"}, status=status.HTTP_400_BAD_REQUEST)
+
+        user.profile_picture = request.FILES['image']
+        user.save()
+
+        return Response({
+            "message": "Profile picture updated successfully",
+            "profile_picture_url": request.build_absolute_uri(user.profile_picture.url) if user.profile_picture else None
+        })
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

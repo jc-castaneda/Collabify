@@ -12,3 +12,4 @@ typing_extensions==4.13.0
 dj-database-url
 psycopg2-binary
 django-cors-headers
+Pillow==11.2.1

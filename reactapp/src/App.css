@@ -36,3 +36,24 @@
     transform: rotate(360deg);
   }
 }
+
+@media (max-width: 768px) {
+  .app-container {
+    padding: 10px;
+  }
+}
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  -webkit-text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+input, textarea, select, button {
+  font-size: 16px; /* Prevents iOS from zooming in */
+}

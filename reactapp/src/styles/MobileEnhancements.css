@@ -1,0 +1,128 @@
+@media (max-width: 768px) {
+    /* General improvements */
+    body {
+      font-size: 16px; /* Base font size on mobile */
+    }
+    
+    /* Improved tap targets */
+    button, a, input[type="submit"] {
+      min-height: 44px; /* Apple's recommended minimum tap target size */
+    }
+    
+    /* More visible focus states for accessibility */
+    a:focus, button:focus, input:focus, textarea:focus, select:focus {
+      outline: 3px solid var(--collabify-gradient-start);
+      outline-offset: 2px;
+    }
+    
+    /* Container padding */
+    .app-container {
+      padding: 10px;
+    }
+    
+    /* Form elements */
+    input, textarea, select {
+      font-size: 16px; /* Prevents iOS zoom on focus */
+    }
+    
+    /* Navbar improvements */
+    .navbar {
+      height: 60px; /* Slightly smaller navbar */
+    }
+    
+    .logo-image {
+      height: 30px; /* Smaller logo */
+    }
+    
+    .logo-text {
+      font-size: 20px; /* Smaller brand name */
+    }
+    
+    /* More touch-friendly nav menu */
+    .nav-menu.active {
+      padding-top: 20px;
+    }
+    
+    .nav-link {
+      padding: 15px 20px;
+      font-size: 18px; /* Larger text in mobile menu */
+    }
+    
+    /* Single column layouts for better readability */
+    .form-row, 
+    .portfolio-stats, 
+    .features-grid, 
+    .posts-grid {
+      flex-direction: column;
+      grid-template-columns: 1fr !important;
+    }
+    
+    /* Fix audio players */
+    audio {
+      width: 100%;
+    }
+    
+    /* Fix image previews */
+    .image-preview img {
+      max-width: 100%;
+      height: auto;
+    }
+    
+    /* Stack modal actions */
+    .modal-actions, 
+    .form-actions {
+      flex-direction: column;
+      gap: 10px;
+    }
+    
+    .modal-actions button,
+    .form-actions button {
+      width: 100%;
+    }
+    
+    /* Feed posts */
+    .post-card {
+      padding: 15px;
+    }
+    
+    /* Content cards */
+    .card, 
+    .profile-container, 
+    .post-detail-content {
+      padding: 15px !important;
+    }
+    
+    /* Content headings */
+    h1 { font-size: 1.8rem !important; }
+    h2 { font-size: 1.5rem !important; }
+    h3 { font-size: 1.2rem !important; }
+  }
+  
+  /* Small phones */
+  @media (max-width: 480px) {
+    .container, .upload-container, .profile-container {
+      padding: 10px !important;
+    }
+    
+    .navbar-logo {
+      margin-left: 5px;
+    }
+    
+    .form-group label {
+      font-size: 0.9rem;
+    }
+    
+    /* Smaller headers */
+    h1 { font-size: 1.6rem !important; }
+    h2 { font-size: 1.3rem !important; }
+    h3 { font-size: 1.1rem !important; }
+  }
+
+  @media (max-width: 768px) {
+    .collabify-logo {
+      width: 80%;
+      max-width: 350px;
+      margin-top: -50px; /* reduce the negative margin */
+    }
+  }
+  

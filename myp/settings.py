@@ -5,29 +5,21 @@ from pathlib import Path
 from datetime import timedelta
 
 # H E L P E R   F (X) N S ------------------------------------------
-# Gets environment variables
 def get_secret(secret_id, backup=None):
     return os.getenv(secret_id, backup)
 
 # E N V I R O N M E N T   S E T T I N G S --------------------------
-# Gets PIPELINE environment variable
 is_local = get_secret('PIPELINE') != 'production'
-
-# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = is_local
 
 # P A T H   S E T T I N G S ----------------------------------------
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Root URL Configuration
+# R O O T   &   W S G I --------------------------------------------
 ROOT_URLCONF = 'myp.urls'
-
-# Web Server Gateway Interface (Default)
 WSGI_APPLICATION = 'myp.wsgi.application'
 
-# S E C U R I T Y   S E T T I N G S --------------------------------
-# SECURITY WARNING: keep the secret key used in production secret!
+# S E C U R I T Y   &   S E C R E T   K E Y ------------------------
 if is_local:
     SECRET_KEY = 'django-insecure-a9(x(7r#zq)gd5co&h2n5y5%ks)=2ngwrdq%(%=%(aj#3uzr$t'
 else:
@@ -35,23 +27,21 @@ else:
     if not SECRET_KEY:
         raise Exception("SECRET_KEY environment variable must be set in production")
 
-# Defines which domains can serve requests from this Django instance
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '.onrender.com', 'myp-django.onrender.com']
+ALLOWED_HOSTS = [
+    'localhost', '127.0.0.1',
+    '.onrender.com', 'myp-django.onrender.com'
+]
 
 # C O R S   S E T T I N G S ----------------------------------------
-# CORS Configuration - controls which domains can access API
 if DEBUG:
     CORS_ALLOW_ALL_ORIGINS = True
 else:
     CORS_ALLOWED_ORIGINS = [
         "https://collabify-is5n.onrender.com",
-        # Add any other production frontend URLs here
-    ]
 
-# A P P L I C A T I O N S   &   M I D D L E W A R E ----------------
-# Application definition
+
+# A P P S   &   M I D D L E W A R E -------------------------------
 INSTALLED_APPS = [
-    # Django Built-in Apps (Default)---
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -59,22 +49,18 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    # Custom Apps -------------------
-    'users',  # Our user management APP
-    'feed',   # Our post management APP
+    'users',
+    'feed',
 
-    # Rest framework and JWT
     'rest_framework',
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
 
-    # CORS support
-    'corsheaders'
+    'corsheaders',
 ]
 
-# Middleware definition
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',  # Must be at the top!
+    'corsheaders.middleware.CorsMiddleware',  # must be first
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -84,42 +70,28 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-# A U T H E N T I C A T I O N   S E T T I N G S -------------------
-# Telling Django to use our custom model
 AUTH_USER_MODEL = 'users.CustomUser'
 
-# Telling Django to use JWT for authentication
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
 }
 
-# Password Validators (Default)
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',},
+    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',},
+    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',},
+    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',},
 ]
 
 if DEBUG:
-    # Longer Token Expiration Time for Testint and Developement
     SIMPLE_JWT = {
         'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
-        'REFRESH_TOKEN_LIFETIME': timedelta(days=7)
+        'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
     }
 
-# D A T A B A S E   S E T T I N G S -------------------------------
-# Database URL handling (Default)
+# D A T A B A S E S -----------------------------------------------
 DATABASES = {
     'default': dj_database_url.config(
         default='sqlite:///db.sqlite3',
@@ -127,8 +99,7 @@ DATABASES = {
     )
 }
 
-# T E M P L A T E S   S E T T I N G S -----------------------------
-# (Default)
+# T E M P L A T E S -----------------------------------------------
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -144,17 +115,19 @@ TEMPLATES = [
     },
 ]
 
-# S T A T I C   F I L E S   S E T T I N G S -----------------------
-# Static files settings
+# S T A T I C   &   M E D I A   F I L E S -------------------------
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-# I N T E R N A T I O N A L I Z A T I O N -------------------------
-# Internationalization (Default)
+# Media files (user uploads)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# I18N & T Z ------------------------------------------------------
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
-# Default primary key field type
+# P K   F I E L D   T Y P E ---------------------------------------
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

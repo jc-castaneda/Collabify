@@ -13,16 +13,26 @@ class UserSerializer(serializers.ModelSerializer):
 
 class CommentSerializer(serializers.ModelSerializer):
     author = UserSerializer(read_only=True)
-
+    replies = serializers.SerializerMethodField()
+    timestamp = serializers.FloatField(required=False, allow_null=True)
+    
     class Meta:
         model = Comment
-        fields = ['id', 'content', 'author', 'created_at']
+        fields = ['id', 'content', 'author', 'created_at', 'timestamp', 'parent', 'replies']
         read_only_fields = ['author', 'created_at']
-
+    
+    def get_replies(self, obj):
+        if hasattr(obj, 'prefetched_replies'):
+            replies = obj.prefetched_replies
+        else:
+            replies = Comment.objects.filter(parent=obj)
+        
+        return CommentSerializer(replies, many=True, context=self.context).data
+    
     def create(self, validated_data):
         validated_data['author'] = self.context['request'].user
         return super().create(validated_data)
-
+    
 class PostSerializer(serializers.ModelSerializer):
     creator = UserSerializer(read_only=True)
     like_count = serializers.SerializerMethodField()

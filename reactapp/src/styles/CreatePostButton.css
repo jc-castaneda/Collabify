@@ -1,0 +1,31 @@
+/* reactapp/src/styles/CreatePostButton.css */
+
+.create-post-button {
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 30px;
+    background: linear-gradient(
+      to right,
+      var(--collabify-gradient-start),
+      var(--collabify-gradient-end)
+    );
+    color: white;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 4px 12px rgba(90, 49, 230, 0.2);
+  }
+  
+  .create-post-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(90, 49, 230, 0.3);
+  }
+  
+  .plus-icon {
+    font-size: 1.2rem;
+    font-weight: 700;
+  }
