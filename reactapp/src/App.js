@@ -34,7 +34,7 @@ const ProtectedRoute = ({ children }) => {
 
 function App() {
   return (
-    <Router>
+    <>
       <Navbar />
       <div className="app-container">
         <Routes>
@@ -132,7 +132,7 @@ function App() {
           />
         </Routes>
       </div>
-    </Router>
+    </>
   );
 }
 
