@@ -30,6 +30,10 @@ class CustomUser(AbstractUser):
 
 
 # Stores the friend status between 2 users
+# By default, no link exists between 2 users
+# One is created when a friend request is sent
+# If the request is accepted, the 'accepted' paramater changes to reflect this
+
 class FriendStatus(models.Model):
     user_a = models.IntegerField()
     user_b = models.IntegerField()
